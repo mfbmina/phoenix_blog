@@ -8,6 +8,25 @@ Primeiro, você irá criar uma tabela para os usuários que desejam se cadastrar
 
 ---
 
+## Setup da aplicação
+
+### Requisitos
+
+- Docker
+- Docker-compose
+- Erlang 23.0.4
+- Elixir 1.11.2
+- Postgres 9.6
+
+### Inicialização
+
+1. `$ docker-compose build`
+1. `$ docker-compose up`
+1. `$ docker-compose exec app mix ecto.create`
+1. `$ docker-compose exec app mix ecto.migrate`
+
+---
+
 ## Requisitos Obrigatórios:
 
 ### 0 – Banco de Dados
