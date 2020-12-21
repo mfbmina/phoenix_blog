@@ -6,7 +6,6 @@ services:
     environment:
       PGUSER: postgres
       PGPASSWORD: postgres
-      PGDATABASE: blog
       PGPORT: 5432
       PGHOST: db
     volumes:

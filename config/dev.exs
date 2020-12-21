@@ -1,5 +1,8 @@
 use Mix.Config
 
+# Configure your database
+config :blog, Blog.Repo, database: "blogs_dev"
+
 # For development, we disable any cache and enable
 # debugging and code reloading.
 #
