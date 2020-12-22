@@ -21,6 +21,7 @@ defmodule BlogWeb.Router do
 
     delete "/users/me", UserController, :delete
     resources "/users", UserController, only: [:index, :show]
+    resources "/posts", PostController
   end
 
   # Enables LiveDashboard only for development
