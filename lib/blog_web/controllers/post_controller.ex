@@ -31,11 +31,22 @@ defmodule BlogWeb.PostController do
     end
   end
 
-  def update(conn, %{"id" => id, "post" => post_params}) do
-    post = Posts.get_post!(id)
+  def update(conn, %{"id" => id, "title" => title, "content" => content}) do
+    {:ok, user} = current_user(conn)
+    post_params = %{"title" => title, "content" => content}
 
-    with {:ok, %Post{} = post} <- Posts.update_post(post, post_params) do
-      render(conn, "show.json", post: post)
+    case Posts.get_post!(id) do
+    nil ->
+      {:error, :not_found, "Post não existe"}
+    post ->
+      case post.user == user do
+      true ->
+        with {:ok, %Post{} = post} <- Posts.update_post(post, post_params) do
+          render(conn, "show.json", post: post)
+        end
+      false ->
+        {:error, :unauthorized}
+      end
     end
   end
 

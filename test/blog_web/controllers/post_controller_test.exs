@@ -127,7 +127,7 @@ defmodule BlogWeb.PostControllerTest do
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, Routes.post_path(conn, :create), @invalid_attrs)
-      assert json_response(conn, 400)["errors"] != %{}
+      assert json_response(conn, 400)["message"] == "\"content\" can't be blank"
     end
   end
 
@@ -154,17 +154,24 @@ defmodule BlogWeb.PostControllerTest do
   describe "update post" do
     setup [:valid_token, :create_post]
 
-    test "renders post when data is valid", %{conn: conn, post: post, user: user} do
-      attrs = Map.merge(@update_attrs, %{user_id: user.id})
-      conn = put(conn, Routes.post_path(conn, :update, post), post: attrs)
+    test "renders post when data is valid", %{conn: conn, post: post} do
+      conn = put(conn, Routes.post_path(conn, :update, post), @update_attrs)
 
       assert json_response(conn, 200)["title"] == @update_attrs[:title]
       assert json_response(conn, 200)["content"] == @update_attrs[:content]
     end
 
     test "renders errors when data is invalid", %{conn: conn, post: post} do
-      conn = put(conn, Routes.post_path(conn, :update, post), post: @invalid_attrs)
-      assert json_response(conn, 400)["errors"] != %{}
+      conn = put(conn, Routes.post_path(conn, :update, post), @invalid_attrs)
+      assert json_response(conn, 400)["message"] == "\"content\" can't be blank"
+    end
+
+    test "renders errors when user doesn't create the resource", %{conn: conn} do
+      {:ok, user} = Accounts.create_user(%{email: "2@2.com", password: "123456", display_name: "Foo Barr"})
+      post = fixture(:post, user.id)
+
+      conn = put(conn, Routes.post_path(conn, :update, post), @update_attrs)
+      assert json_response(conn, 401)["message"] == "Usuário não autorizado"
     end
   end
 

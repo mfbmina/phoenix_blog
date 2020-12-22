@@ -28,4 +28,11 @@ defmodule BlogWeb.FallbackController do
     |> put_view(BlogWeb.ErrorView)
     |> render("error.json", message: message)
   end
+
+  def call(conn, {:error, :unauthorized}) do
+    conn
+    |> put_status(:unauthorized)
+    |> put_view(BlogWeb.ErrorView)
+    |> render("error.json", message: "Usuário não autorizado")
+  end
 end
