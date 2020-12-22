@@ -23,7 +23,13 @@ defmodule BlogWeb.UserController do
 
   def show(conn, %{"id" => id}) do
     user = Accounts.get_user!(id)
-    render(conn, "show.json", user: user)
+
+    case user do
+    nil ->
+      {:error, :not_found, "Usuário não existe"}
+    ^user ->
+      render(conn, "show.json", user: user)
+    end
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do

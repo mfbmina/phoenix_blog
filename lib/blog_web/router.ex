@@ -19,7 +19,7 @@ defmodule BlogWeb.Router do
   scope "/", BlogWeb do
     pipe_through [:api, :authenticated]
 
-    resources "/users", UserController, only: [:index]
+    resources "/users", UserController, only: [:index, :show]
   end
 
   # Enables LiveDashboard only for development

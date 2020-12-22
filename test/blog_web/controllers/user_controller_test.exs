@@ -50,6 +50,46 @@ defmodule BlogWeb.UserControllerTest do
     end
   end
 
+  describe "show without token" do
+    test "returns an error message", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :show, 1))
+      assert json_response(conn, 401)["message"] == "Token não encontrado"
+    end
+  end
+
+  describe "show with valid token and id" do
+    setup [:valid_token]
+
+    test "lists all users", %{conn: conn, auth_user: user} do
+      conn = get(conn, Routes.user_path(conn, :show, user.id))
+
+      assert json_response(conn, 200) == %{"display_name" => user.display_name, "email" => user.email, "id" => user.id, "image" => user.image}
+    end
+  end
+
+  describe "index with valid token and invalid id" do
+    setup [:valid_token]
+
+    test "lists all users", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :show, 999_999))
+
+      assert json_response(conn, 404)["message"] == "Usuário não existe"
+    end
+  end
+
+  describe "show with invalid token" do
+    setup %{conn: conn} do
+      new_conn = conn |> put_req_header("authorization", "Bearer wrong_token")
+
+      {:ok, conn: new_conn}
+    end
+
+    test "return an error message", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :show, 1))
+      assert json_response(conn, 401)["message"] == "Token expirado ou inválido"
+    end
+  end
+
   describe "create user" do
     test "renders user when data is valid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)

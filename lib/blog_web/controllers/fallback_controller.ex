@@ -7,7 +7,7 @@ defmodule BlogWeb.FallbackController do
   use BlogWeb, :controller
 
   # This clause handles errors returned by Ecto's insert/update/delete.
-  def call(conn, {:error,%Ecto.Changeset{errors: [email: {_, [constraint: :unique, constraint_name: _]}]}}) do
+  def call(conn, {:error, %Ecto.Changeset{errors: [email: {_, [constraint: :unique, constraint_name: _]}]}}) do
     conn
     |> put_status(:conflict)
     |> put_view(BlogWeb.ErrorView)
@@ -22,10 +22,10 @@ defmodule BlogWeb.FallbackController do
   end
 
   # This clause is an example of how to handle resources that cannot be found.
-  def call(conn, {:error, :not_found}) do
+  def call(conn, {:error, :not_found, message}) do
     conn
     |> put_status(:not_found)
     |> put_view(BlogWeb.ErrorView)
-    |> render(:"404")
+    |> render("error.json", message: message)
   end
 end
