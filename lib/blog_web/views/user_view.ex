@@ -17,4 +17,8 @@ defmodule BlogWeb.UserView do
       display_name: user.display_name,
       image: user.image}
   end
+
+  def render("jwt.json", %{jwt: jwt}) do
+    %{jwt: jwt}
+  end
 end

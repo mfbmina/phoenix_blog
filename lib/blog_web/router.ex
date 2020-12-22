@@ -5,8 +5,10 @@ defmodule BlogWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", BlogWeb do
+  scope "/", BlogWeb do
     pipe_through :api
+
+    post "/user", UserController, :create
   end
 
   # Enables LiveDashboard only for development

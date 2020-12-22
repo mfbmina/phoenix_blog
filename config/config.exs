@@ -29,3 +29,8 @@ config :phoenix, :json_library, Jason
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
+
+# Guardian config
+config :blog, Blog.Guardian,
+       issuer: "blog",
+       secret_key: "8vzfkWjcR+WZ0gqP0rBBYxqRcbseC6m9XtmbGXxJrYKmiWRN/mxh3o9suTO3LIk5"

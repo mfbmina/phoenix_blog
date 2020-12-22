@@ -17,7 +17,7 @@ defmodule Blog.Accounts.User do
     user
     |> cast(attrs, [:email, :display_name, :image, :password])
     |> validate_required([:email, :display_name, :password])
-    |> validate_format(:email, ~r/@/)
+    |> validate_format(:email, ~r/.+@.+\..+/)
     |> validate_length(:password, min: 6)
     |> validate_length(:display_name, min: 8)
     |> unique_constraint(:email)

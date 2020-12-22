@@ -7,6 +7,13 @@ defmodule BlogWeb.FallbackController do
   use BlogWeb, :controller
 
   # This clause handles errors returned by Ecto's insert/update/delete.
+  def call(conn, {:error,%Ecto.Changeset{errors: [email: {_, [constraint: :unique, constraint_name: _]}]}}) do
+    conn
+    |> put_status(:conflict)
+    |> put_view(BlogWeb.ChangesetView)
+    |> render("error.json", message: "Usuário já existe")
+  end
+
   def call(conn, {:error, %Ecto.Changeset{} = changeset}) do
     conn
     |> put_status(:unprocessable_entity)
@@ -21,4 +28,7 @@ defmodule BlogWeb.FallbackController do
     |> put_view(BlogWeb.ErrorView)
     |> render(:"404")
   end
+
+  defp status(email: {_, [constraint: :unique, constraint_name: _]}), do: :conflict
+  defp status(_), do: :unprocessable_entity
 end
