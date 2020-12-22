@@ -1,5 +1,6 @@
 defmodule BlogWeb.Router do
   use BlogWeb, :router
+  use Plug.ErrorHandler
 
   pipeline :api do
     plug :accepts, ["json"]
@@ -40,5 +41,13 @@ defmodule BlogWeb.Router do
       pipe_through [:fetch_session, :protect_from_forgery]
       live_dashboard "/dashboard", metrics: BlogWeb.Telemetry
     end
+  end
+
+  def handle_errors(conn, %{kind: kind, reason: reason, stack: _stack}) do
+    body = Jason.encode!(%{message: "Something went wrong", details: reason.message})
+
+    conn
+    |> put_resp_content_type("application/json; charset=utf-8")
+    |> send_resp(:internal_server_error, body)
   end
 end
