@@ -31,7 +31,8 @@ defmodule Blog.PostsTest do
 
     test "list_posts/0 returns all posts" do
       post = post_fixture()
-      assert Posts.list_posts() == [post]
+
+      assert Posts.list_posts() == [Repo.preload(post, :user)]
     end
 
     test "get_post!/1 returns the post with given id" do
