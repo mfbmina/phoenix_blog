@@ -53,14 +53,14 @@ defmodule BlogWeb.PostControllerTest do
       {:ok, conn: new_conn}
     end
 
-    test "renders post when data is valid", %{conn: conn} do
+    test "returns error message", %{conn: conn} do
       conn = get(conn, Routes.post_path(conn, :index))
       assert json_response(conn, 401)["message"] == "Token expirado ou inválido"
     end
   end
 
   describe "index without token" do
-    test "renders post when data is valid", %{conn: conn} do
+    test "returns error message", %{conn: conn} do
       conn = get(conn, Routes.post_path(conn, :index))
       assert json_response(conn, 401)["message"] == "Token não encontrado"
     end
@@ -99,14 +99,14 @@ defmodule BlogWeb.PostControllerTest do
       {:ok, conn: new_conn}
     end
 
-    test "renders post when data is valid", %{conn: conn} do
+    test "returns error message", %{conn: conn} do
       conn = get(conn, Routes.post_path(conn, :search), q: "some")
       assert json_response(conn, 401)["message"] == "Token expirado ou inválido"
     end
   end
 
   describe "search without token" do
-    test "renders post when data is valid", %{conn: conn} do
+    test "returns error message", %{conn: conn} do
       conn = get(conn, Routes.post_path(conn, :search), q: "some")
       assert json_response(conn, 401)["message"] == "Token não encontrado"
     end
@@ -148,14 +148,14 @@ defmodule BlogWeb.PostControllerTest do
       {:ok, conn: new_conn}
     end
 
-    test "renders post when data is valid", %{conn: conn} do
+    test "returns error message", %{conn: conn} do
       conn = get(conn, Routes.post_path(conn, :show, 999_999))
       assert json_response(conn, 401)["message"] == "Token expirado ou inválido"
     end
   end
 
   describe "show without token" do
-    test "renders post when data is valid", %{conn: conn} do
+    test "returns error message", %{conn: conn} do
       conn = get(conn, Routes.post_path(conn, :show, 999_999))
       assert json_response(conn, 401)["message"] == "Token não encontrado"
     end
@@ -184,14 +184,14 @@ defmodule BlogWeb.PostControllerTest do
       {:ok, conn: new_conn}
     end
 
-    test "renders post when data is valid", %{conn: conn} do
+    test "returns error message", %{conn: conn} do
       conn = post(conn, Routes.post_path(conn, :create), @create_attrs)
       assert json_response(conn, 401)["message"] == "Token expirado ou inválido"
     end
   end
 
   describe "create post without token" do
-    test "renders post when data is valid", %{conn: conn} do
+    test "returns error message", %{conn: conn} do
       conn = post(conn, Routes.post_path(conn, :create), @create_attrs)
       assert json_response(conn, 401)["message"] == "Token não encontrado"
     end
@@ -221,6 +221,26 @@ defmodule BlogWeb.PostControllerTest do
     end
   end
 
+  describe "update post with invalid token" do
+    setup %{conn: conn} do
+      new_conn = conn |> put_req_header("authorization", "Bearer wrong_token")
+
+      {:ok, conn: new_conn}
+    end
+
+    test "returns error message", %{conn: conn} do
+      conn = put(conn, Routes.post_path(conn, :update, 999_999), @update_attrs)
+      assert json_response(conn, 401)["message"] == "Token expirado ou inválido"
+    end
+  end
+
+  describe "update post without token" do
+    test "returns error message", %{conn: conn} do
+      conn = put(conn, Routes.post_path(conn, :update, 999_999), @update_attrs)
+      assert json_response(conn, 401)["message"] == "Token não encontrado"
+    end
+  end
+
   describe "delete post" do
     setup [:valid_token, :create_post]
 
@@ -230,6 +250,39 @@ defmodule BlogWeb.PostControllerTest do
 
       conn = get(conn, Routes.post_path(conn, :show, post.id))
       assert json_response(conn, 404)["message"] == "Post não existe"
+    end
+
+    test "renders errors when post doesn't exist", %{conn: conn} do
+      conn = delete(conn, Routes.post_path(conn, :delete, 999_999))
+      assert json_response(conn, 404)["message"] == "Post não existe"
+    end
+
+    test "renders errors when user doesn't create the resource", %{conn: conn} do
+      {:ok, user} = Accounts.create_user(%{email: "2@2.com", password: "123456", display_name: "Foo Barr"})
+      post = fixture(:post, user.id)
+
+      conn = delete(conn, Routes.post_path(conn, :delete, post))
+      assert json_response(conn, 401)["message"] == "Usuário não autorizado"
+    end
+  end
+
+  describe "delete post with invalid token" do
+    setup %{conn: conn} do
+      new_conn = conn |> put_req_header("authorization", "Bearer wrong_token")
+
+      {:ok, conn: new_conn}
+    end
+
+    test "rreturns error message", %{conn: conn} do
+      conn = delete(conn, Routes.post_path(conn, :delete, 999_999))
+      assert json_response(conn, 401)["message"] == "Token expirado ou inválido"
+    end
+  end
+
+  describe "delete post without token" do
+    test "returns error message", %{conn: conn} do
+      conn = delete(conn, Routes.post_path(conn, :delete, 999_999))
+      assert json_response(conn, 401)["message"] == "Token não encontrado"
     end
   end
 

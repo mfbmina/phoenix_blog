@@ -60,8 +60,14 @@ defmodule BlogWeb.PostController do
     nil ->
       {:error, :not_found, "Post não existe"}
     post ->
-      with {:ok, %Post{}} <- Posts.delete_post(post) do
-        send_resp(conn, :no_content, "")
+      {:ok, user} = current_user(conn)
+      case post.user == user do
+      true ->
+        with {:ok, %Post{}} <- Posts.delete_post(post) do
+          send_resp(conn, :no_content, "")
+        end
+      false ->
+        {:error, :unauthorized}
       end
     end
   end
