@@ -8,6 +8,7 @@ defmodule BlogWeb.Router do
   scope "/", BlogWeb do
     pipe_through :api
 
+    post "/login", UserController, :login
     post "/user", UserController, :create
   end
 

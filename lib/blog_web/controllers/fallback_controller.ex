@@ -10,7 +10,7 @@ defmodule BlogWeb.FallbackController do
   def call(conn, {:error,%Ecto.Changeset{errors: [email: {_, [constraint: :unique, constraint_name: _]}]}}) do
     conn
     |> put_status(:conflict)
-    |> put_view(BlogWeb.ChangesetView)
+    |> put_view(BlogWeb.ErrorView)
     |> render("error.json", message: "Usuário já existe")
   end
 
@@ -28,7 +28,4 @@ defmodule BlogWeb.FallbackController do
     |> put_view(BlogWeb.ErrorView)
     |> render(:"404")
   end
-
-  defp status(email: {_, [constraint: :unique, constraint_name: _]}), do: :conflict
-  defp status(_), do: :unprocessable_entity
 end

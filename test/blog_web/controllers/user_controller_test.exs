@@ -45,6 +45,45 @@ defmodule BlogWeb.UserControllerTest do
     end
   end
 
+  describe "login user" do
+    setup [:create_user]
+
+    test "renders jwt when data is valid", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :login), email: "some@email.com", password: "some password_hash")
+      assert %{"jwt" => _jwt} = json_response(conn, 200)
+    end
+
+    test "renders errors when password is incorrect", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :login), email: "some@email.com", password: "password_hash")
+      assert json_response(conn, 400)["message"] == "Campos inválidos"
+    end
+
+    test "renders errors when email is incorrect", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :login), email: "some@some.com", password: "password_hash")
+      assert json_response(conn, 400)["message"] == "Campos inválidos"
+    end
+
+    test "renders errors when password is empty", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :login), email: "some@email.com", password: "")
+      assert json_response(conn, 400)["message"] == "\"password\" is not allowed to be empty"
+    end
+
+    test "renders errors when email is empty", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :login), email: "", password: "password_hash")
+      assert json_response(conn, 400)["message"] == "\"email\" is not allowed to be empty"
+    end
+
+    test "renders errors when password is nil", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :login), email: "some@email.com")
+      assert json_response(conn, 400)["message"] == "\"password\" is required"
+    end
+
+    test "renders errors when email is nil", %{conn: conn} do
+      conn = post(conn, Routes.user_path(conn, :login), password: "password_hash")
+      assert json_response(conn, 400)["message"] == "\"email\" is required"
+    end
+  end
+
   # describe "update user" do
   #   setup [:create_user]
   #
