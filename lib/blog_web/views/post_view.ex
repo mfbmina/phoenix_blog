@@ -7,7 +7,7 @@ defmodule BlogWeb.PostView do
   end
 
   def render("show.json", %{post: post}) do
-    %{data: render_one(post, PostView, "post.json")}
+    render_one(post, PostView, "post.json")
   end
 
   def render("post.json", %{post: post}) do

@@ -35,7 +35,7 @@ defmodule BlogWeb.PostController do
     post = Posts.get_post!(id)
 
     with {:ok, %Post{} = post} <- Posts.update_post(post, post_params) do
-      render(conn, "show.json", post: post |> Blog.Repo.preload(:user))
+      render(conn, "show.json", post: post)
     end
   end
 
