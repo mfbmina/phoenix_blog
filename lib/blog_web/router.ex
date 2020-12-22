@@ -20,6 +20,8 @@ defmodule BlogWeb.Router do
     pipe_through [:api, :authenticated]
 
     delete "/users/me", UserController, :delete
+    get "/posts/search", PostController, :search
+
     resources "/users", UserController, only: [:index, :show]
     resources "/posts", PostController
   end

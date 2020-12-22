@@ -35,6 +35,13 @@ defmodule Blog.PostsTest do
       assert Posts.list_posts() == [Repo.preload(post, :user)]
     end
 
+    test "list_posts/1 returns posts which match" do
+      post = post_fixture()
+
+      assert Posts.list_posts("some") == [Repo.preload(post, :user)]
+      assert Posts.list_posts("random") == []
+    end
+
     test "get_post!/1 returns the post with given id" do
       post = post_fixture()
       assert Posts.get_post!(post.id) == Repo.preload(post, :user)

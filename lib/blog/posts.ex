@@ -21,6 +21,13 @@ defmodule Blog.Posts do
     Repo.all(Post) |> Repo.preload(:user)
   end
 
+  def list_posts(search_term) do
+    query = "%#{search_term}%"
+
+    Repo.all(from p in Post, where: like(p.content, ^query))
+    |> Repo.preload(:user)
+  end
+
   @doc """
   Gets a single post.
 

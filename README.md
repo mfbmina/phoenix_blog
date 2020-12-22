@@ -27,6 +27,12 @@ Primeiro, você irá criar uma tabela para os usuários que desejam se cadastrar
 
 ---
 
+## Escolhas / Possíveis melhorias
+
+- Não reutilizei a action `index` para buscar entre os `posts`, pois segundo os requisitos, deveria ser uma action nova.
+
+---
+
 ## Requisitos Obrigatórios:
 
 ### 0 – Banco de Dados

@@ -11,6 +11,11 @@ defmodule BlogWeb.PostController do
     render(conn, "index.json", posts: posts)
   end
 
+  def search(conn, %{"q" => search_term}) do
+    posts = Posts.list_posts(search_term)
+    render(conn, "index.json", posts: posts)
+  end
+
   def create(conn, %{"title" => title, "content" => content}) do
     {:ok, user} = current_user(conn)
     post_params = %{"title" => title, "content" => content, "user_id" => user.id}

@@ -66,6 +66,52 @@ defmodule BlogWeb.PostControllerTest do
     end
   end
 
+  describe "search" do
+    setup [:valid_token, :create_post]
+
+    test "lists all posts when findind resources", %{conn: conn, post: post, user: user} do
+      conn = get(conn, Routes.post_path(conn, :search), q: "some")
+      assert json_response(conn, 200) == [%{
+        "id" => post.id,
+        "title" => post.title,
+        "content" => post.content,
+        "published" => NaiveDateTime.to_iso8601(post.inserted_at),
+        "updated" => NaiveDateTime.to_iso8601(post.updated_at),
+        "user" => %{
+          "display_name" => user.display_name,
+          "email" => user.email,
+          "id" => user.id,
+          "image" => user.image }
+        }
+      ]
+    end
+
+    test "lists zero posts when not found", %{conn: conn} do
+      conn = get(conn, Routes.post_path(conn, :search), q: "invalid")
+      assert json_response(conn, 200) == []
+    end
+  end
+
+  describe "search with invalid token" do
+    setup %{conn: conn} do
+      new_conn = conn |> put_req_header("authorization", "Bearer wrong_token")
+
+      {:ok, conn: new_conn}
+    end
+
+    test "renders post when data is valid", %{conn: conn} do
+      conn = get(conn, Routes.post_path(conn, :search), q: "some")
+      assert json_response(conn, 401)["message"] == "Token expirado ou inválido"
+    end
+  end
+
+  describe "search without token" do
+    test "renders post when data is valid", %{conn: conn} do
+      conn = get(conn, Routes.post_path(conn, :search), q: "some")
+      assert json_response(conn, 401)["message"] == "Token não encontrado"
+    end
+  end
+
   describe "show with valid id" do
     setup [:valid_token, :create_post]
 
