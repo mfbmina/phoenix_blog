@@ -5,11 +5,21 @@ defmodule BlogWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :authenticated do
+    plug Blog.Guardian.AuthPipeline
+  end
+
   scope "/", BlogWeb do
     pipe_through :api
 
     post "/login", UserController, :login
     post "/user", UserController, :create
+  end
+
+  scope "/", BlogWeb do
+    pipe_through [:api, :authenticated]
+
+    resources "/users", UserController, only: [:index]
   end
 
   # Enables LiveDashboard only for development

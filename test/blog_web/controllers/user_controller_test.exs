@@ -2,7 +2,7 @@ defmodule BlogWeb.UserControllerTest do
   use BlogWeb.ConnCase
 
   alias Blog.Accounts
-  alias Blog.Accounts.User
+  alias Blog.Guardian
 
   @create_attrs %{email: "some@email.com", password: "some password_hash", display_name: "Foo Barr"}
   # @update_attrs %{
@@ -19,13 +19,36 @@ defmodule BlogWeb.UserControllerTest do
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}
   end
-  #
-  # describe "index" do
-  #   test "lists all users", %{conn: conn} do
-  #     conn = get(conn, Routes.user_path(conn, :index))
-  #     assert json_response(conn, 200)["data"] == []
-  #   end
-  # end
+
+  describe "index without token" do
+    test "returns an error message", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :index))
+      assert json_response(conn, 401)["message"] == "Token não encontrado"
+    end
+  end
+
+  describe "index with valid token" do
+    setup [:valid_token]
+
+    test "lists all users", %{conn: conn, auth_user: user} do
+      conn = get(conn, Routes.user_path(conn, :index))
+
+      assert json_response(conn, 200) == [%{"display_name" => user.display_name, "email" => user.email, "id" => user.id, "image" => user.image}]
+    end
+  end
+
+  describe "index with invalid token" do
+    setup %{conn: conn} do
+      new_conn = conn |> put_req_header("authorization", "Bearer wrong_token")
+
+      {:ok, conn: new_conn}
+    end
+
+    test "return an error message", %{conn: conn} do
+      conn = get(conn, Routes.user_path(conn, :index))
+      assert json_response(conn, 401)["message"] == "Token expirado ou inválido"
+    end
+  end
 
   describe "create user" do
     test "renders user when data is valid", %{conn: conn} do
@@ -122,5 +145,13 @@ defmodule BlogWeb.UserControllerTest do
   defp create_user(_) do
     user = fixture(:user)
     %{user: user}
+  end
+
+  defp valid_token(%{conn: conn}) do
+    {:ok, user} = Accounts.create_user(%{email: "some@some.com", password: "123456", display_name: "Foo Barr"})
+    {:ok, jwt, _claims} = Guardian.encode_and_sign(user)
+    new_conn = conn |> put_req_header("authorization", "Bearer #{jwt}")
+
+    {:ok, conn: new_conn, auth_user: user}
   end
 end
