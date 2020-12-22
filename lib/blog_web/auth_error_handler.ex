@@ -7,8 +7,6 @@ defmodule Blog.AuthErrorHandler do
       "Token expirado ou inválido"
     :unauthenticated ->
       "Token não encontrado"
-    _ ->
-      "Something went wrong"
     end
 
     body = Jason.encode!(%{message: message})

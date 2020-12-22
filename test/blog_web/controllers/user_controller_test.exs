@@ -169,18 +169,17 @@ defmodule BlogWeb.UserControllerTest do
   #   end
   # end
   #
-  # describe "delete user" do
-  #   setup [:create_user]
-  #
-  #   test "deletes chosen user", %{conn: conn, user: user} do
-  #     conn = delete(conn, Routes.user_path(conn, :delete, user))
-  #     assert response(conn, 204)
-  #
-  #     assert_error_sent 404, fn ->
-  #       get(conn, Routes.user_path(conn, :show, user))
-  #     end
-  #   end
-  # end
+  describe "delete user" do
+    setup [:valid_token]
+
+    test "deletes chosen user", %{conn: conn, auth_user: user} do
+      conn = delete(conn, Routes.user_path(conn, :delete))
+      assert response(conn, 204)
+
+      conn = get(conn, Routes.user_path(conn, :show, user))
+      assert json_response(conn, 404)["message"] == "Usuário não existe"
+    end
+  end
 
   defp create_user(_) do
     user = fixture(:user)

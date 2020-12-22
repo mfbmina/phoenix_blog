@@ -22,12 +22,10 @@ defmodule BlogWeb.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
-
-    case user do
+    case Accounts.get_user!(id) do
     nil ->
       {:error, :not_found, "Usuário não existe"}
-    ^user ->
+    user ->
       render(conn, "show.json", user: user)
     end
   end
@@ -40,11 +38,14 @@ defmodule BlogWeb.UserController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
-    user = Accounts.get_user!(id)
-
-    with {:ok, %User{}} <- Accounts.delete_user(user) do
-      send_resp(conn, :no_content, "")
+  def delete(conn, _params) do
+    case Guardian.Plug.current_resource(conn) do
+    nil ->
+      {:error, :not_found, "Usuário não existe"}
+    user ->
+      with {:ok, %User{}} <- Accounts.delete_user(user) do
+        send_resp(conn, :no_content, "")
+      end
     end
   end
 

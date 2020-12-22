@@ -19,6 +19,7 @@ defmodule BlogWeb.Router do
   scope "/", BlogWeb do
     pipe_through [:api, :authenticated]
 
+    delete "/users/me", UserController, :delete
     resources "/users", UserController, only: [:index, :show]
   end
 
