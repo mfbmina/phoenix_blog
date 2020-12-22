@@ -7,7 +7,6 @@ defmodule Blog.AccountsTest do
     alias Blog.Accounts.User
 
     @valid_attrs %{email: "some@email.com", password: "some password_hash", display_name: "Foo Barr"}
-    @update_attrs %{email: "some.updated@email.com", password: "some updated password_hash", display_name: "Foo Bazz"}
     @invalid_attrs %{email: nil, password_hash: nil}
 
     def user_fixture(attrs \\ %{}) do
@@ -46,18 +45,6 @@ defmodule Blog.AccountsTest do
 
     test "create_user/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Accounts.create_user(@invalid_attrs)
-    end
-
-    test "update_user/2 with valid data updates the user" do
-      user = user_fixture()
-      assert {:ok, %User{} = user} = Accounts.update_user(user, @update_attrs)
-      assert user.email == "some.updated@email.com"
-      assert user.display_name == "Foo Bazz"
-    end
-
-    test "update_user/2 with invalid data returns error changeset" do
-      user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
     end
 
     test "delete_user/1 deletes the user" do
