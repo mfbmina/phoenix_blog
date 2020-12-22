@@ -11,12 +11,14 @@ defmodule BlogWeb.PostController do
     render(conn, "index.json", posts: posts)
   end
 
-  def create(conn, %{"post" => post_params}) do
+  def create(conn, %{"title" => title, "content" => content}) do
+    {:ok, user} = current_user(conn)
+    post_params = %{"title" => title, "content" => content, "user_id" => user.id}
+
     with {:ok, %Post{} = post} <- Posts.create_post(post_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.post_path(conn, :show, post))
-      |> render("show.json", post: post)
+      |> render("create.json", post: post)
     end
   end
 
@@ -45,6 +47,15 @@ defmodule BlogWeb.PostController do
       with {:ok, %Post{}} <- Posts.delete_post(post) do
         send_resp(conn, :no_content, "")
       end
+    end
+  end
+
+  defp current_user(conn) do
+    case Guardian.Plug.current_resource(conn) do
+    nil ->
+      {:error, :not_found, "Usuário não existe"}
+    user ->
+      {:ok, user}
     end
   end
 end

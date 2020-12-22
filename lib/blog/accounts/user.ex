@@ -9,6 +9,8 @@ defmodule Blog.Accounts.User do
     field :display_name, :string
     field :image, :string
 
+    has_many :posts, Blog.Posts.Post
+
     timestamps()
   end
 
@@ -26,11 +28,10 @@ defmodule Blog.Accounts.User do
 
   defp put_password_hash(changeset) do
     case changeset do
-      %Ecto.Changeset{valid?: true, changes: %{password: pass}}
-        ->
-          put_change(changeset, :password_hash, Bcrypt.hash_pwd_salt(pass))
+      %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
+        put_change(changeset, :password_hash, Bcrypt.hash_pwd_salt(pass))
       _ ->
-          changeset
+        changeset
     end
   end
 end

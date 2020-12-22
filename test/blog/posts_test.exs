@@ -1,6 +1,7 @@
 defmodule Blog.PostsTest do
   use Blog.DataCase
 
+  alias Blog.Accounts
   alias Blog.Posts
 
   describe "posts" do
@@ -10,11 +11,20 @@ defmodule Blog.PostsTest do
     @update_attrs %{content: "some updated content", title: "some updated title"}
     @invalid_attrs %{content: nil, title: nil}
 
-    def post_fixture(attrs \\ %{}) do
-      {:ok, post} =
+    def user_fixture(attrs \\ %{}) do
+      {:ok, user} =
         attrs
-        |> Enum.into(@valid_attrs)
-        |> Posts.create_post()
+        |> Enum.into(%{email: "some@email.com", password: "some password_hash", display_name: "Foo Barr"})
+        |> Accounts.create_user()
+
+      user
+    end
+
+    def post_fixture() do
+      user = user_fixture()
+      attrs = Map.merge(@valid_attrs, %{user_id: user.id})
+
+      {:ok, post} = Posts.create_post(attrs)
 
       post
     end
@@ -30,7 +40,10 @@ defmodule Blog.PostsTest do
     end
 
     test "create_post/1 with valid data creates a post" do
-      assert {:ok, %Post{} = post} = Posts.create_post(@valid_attrs)
+      user = user_fixture()
+      attrs = Map.merge(@valid_attrs, %{user_id: user.id})
+
+      assert {:ok, %Post{} = post} = Posts.create_post(attrs)
       assert post.content == "some content"
       assert post.title == "some title"
     end

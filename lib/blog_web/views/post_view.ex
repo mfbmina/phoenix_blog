@@ -15,4 +15,10 @@ defmodule BlogWeb.PostView do
       title: post.title,
       content: post.content}
   end
+
+  def render("create.json", %{post: post}) do
+    %{user_id: post.user_id,
+      title: post.title,
+      content: post.content}
+  end
 end
