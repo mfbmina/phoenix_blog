@@ -44,6 +44,7 @@ defmodule Blog.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       # added libs
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}, # code linter
       {:comeonin, "~> 5.0"}, # Handle password hashes
       {:bcrypt_elixir, "~> 2.0"}, # Encrypts strings (used by comeonin)
       {:guardian, "~> 2.0"} # token based authentication library

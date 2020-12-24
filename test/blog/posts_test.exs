@@ -20,7 +20,7 @@ defmodule Blog.PostsTest do
       user
     end
 
-    def post_fixture() do
+    def post_fixture do
       user = user_fixture()
       attrs = Map.merge(@valid_attrs, %{user_id: user.id})
 

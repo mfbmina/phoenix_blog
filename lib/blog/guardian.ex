@@ -1,4 +1,6 @@
 defmodule Blog.Guardian do
+  @moduledoc false
+
   use Guardian, otp_app: :blog
 
   def subject_for_token(user, _claims) do
