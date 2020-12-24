@@ -37,7 +37,7 @@ defmodule BlogWeb.PostControllerTest do
         "published" => NaiveDateTime.to_iso8601(post.inserted_at),
         "updated" => NaiveDateTime.to_iso8601(post.updated_at),
         "user" => %{
-          "display_name" => user.display_name,
+          "displayName" => user.display_name,
           "email" => user.email,
           "id" => user.id,
           "image" => user.image }
@@ -78,7 +78,7 @@ defmodule BlogWeb.PostControllerTest do
         "published" => NaiveDateTime.to_iso8601(post.inserted_at),
         "updated" => NaiveDateTime.to_iso8601(post.updated_at),
         "user" => %{
-          "display_name" => user.display_name,
+          "displayName" => user.display_name,
           "email" => user.email,
           "id" => user.id,
           "image" => user.image }
@@ -124,7 +124,7 @@ defmodule BlogWeb.PostControllerTest do
         "published" => NaiveDateTime.to_iso8601(post.inserted_at),
         "updated" => NaiveDateTime.to_iso8601(post.updated_at),
         "user" => %{
-          "display_name" => user.display_name,
+          "displayName" => user.display_name,
           "email" => user.email,
           "id" => user.id,
           "image" => user.image }
@@ -166,7 +166,7 @@ defmodule BlogWeb.PostControllerTest do
 
     test "renders post when data is valid", %{conn: conn, user: user} do
       conn = post(conn, Routes.post_path(conn, :create), @create_attrs)
-      assert json_response(conn, 201)["user_id"] == user.id
+      assert json_response(conn, 201)["userId"] == user.id
       assert json_response(conn, 201)["title"] == "some title"
       assert json_response(conn, 201)["content"] == "some content"
     end

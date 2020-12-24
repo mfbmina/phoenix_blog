@@ -29,7 +29,7 @@ defmodule BlogWeb.UserControllerTest do
     test "lists all users", %{conn: conn, auth_user: user} do
       conn = get(conn, Routes.user_path(conn, :index))
 
-      assert json_response(conn, 200) == [%{"display_name" => user.display_name, "email" => user.email, "id" => user.id, "image" => user.image}]
+      assert json_response(conn, 200) == [%{"displayName" => user.display_name, "email" => user.email, "id" => user.id, "image" => user.image}]
     end
   end
 
@@ -59,7 +59,7 @@ defmodule BlogWeb.UserControllerTest do
     test "lists all users", %{conn: conn, auth_user: user} do
       conn = get(conn, Routes.user_path(conn, :show, user.id))
 
-      assert json_response(conn, 200) == %{"display_name" => user.display_name, "email" => user.email, "id" => user.id, "image" => user.image}
+      assert json_response(conn, 200) == %{"displayName" => user.display_name, "email" => user.email, "id" => user.id, "image" => user.image}
     end
   end
 

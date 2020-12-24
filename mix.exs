@@ -47,7 +47,8 @@ defmodule Blog.MixProject do
       {:credo, "~> 1.5", only: [:dev, :test], runtime: false}, # code linter
       {:comeonin, "~> 5.0"}, # Handle password hashes
       {:bcrypt_elixir, "~> 2.0"}, # Encrypts strings (used by comeonin)
-      {:guardian, "~> 2.0"} # token based authentication library
+      {:guardian, "~> 2.0"}, # token based authentication library
+      {:proper_case, "~> 1.0.2"} # handle converting json between camelCase and snake_case
     ]
   end
 

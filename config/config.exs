@@ -34,3 +34,5 @@ import_config "#{Mix.env()}.exs"
 config :blog, Blog.Guardian,
        issuer: "blog",
        secret_key: "8vzfkWjcR+WZ0gqP0rBBYxqRcbseC6m9XtmbGXxJrYKmiWRN/mxh3o9suTO3LIk5"
+
+config :phoenix, :format_encoders, json: Blog.JSONEncoder
