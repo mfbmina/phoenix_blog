@@ -17,19 +17,32 @@ Primeiro, você irá criar uma tabela para os usuários que desejam se cadastrar
 - Erlang 23.0.4
 - Elixir 1.11.2
 - Postgres 9.6
+- Libs listadas em `mix.exs`
 
 ### Inicialização
 
 1. `$ docker-compose build`
+1. `$ docker-compose run app mix ecto.create`
+1. `$ docker-compose run app mix ecto.migrate`
 1. `$ docker-compose up`
-1. `$ docker-compose exec app mix ecto.create`
-1. `$ docker-compose exec app mix ecto.migrate`
+
+### Testes
+
+Rodar o comando: `$ docker-compose run app mix test`
+
+### Linter
+
+Rodar o comando: `$ docker-compose run app mix credo --strict`
 
 ---
 
 ## Escolhas / Possíveis melhorias
 
 - Não reutilizei a action `index` para buscar entre os `posts`, pois segundo os requisitos, deveria ser uma action nova.
+- Decidi utilizar as rotas `/users` e `/posts` no plural ao invés de singular, pois acho que faz mais sentido no REST.
+- A action de `login` ficou um pouco confusa, talvez tem maneira melhor de ser feito.
+- Decidi utilizar Elixir e Phoenix para aprender mais sobre a linguagem.
+- Utilizei docker para facilitar a inicialização do projeto em diferentes computadores.
 
 ---
 
@@ -650,13 +663,3 @@ Alguns exemplos:
   - Um problema inesperado no servidor deve retornar um código de `status 500`;
 
   - Um acesso ao criar um recurso, no nosso caso usuário ou post, deve retornar um código de `status 201`.
-
----
-
-## Instruções para entregar seu projeto:
-
-Crie esse projeto em sua conta no **GitHub** e nos envie o link do repositório.
-
-ps: Lembre-se de deixar o repositório público para que possamos ter acesso ao código
-
-#VQV
