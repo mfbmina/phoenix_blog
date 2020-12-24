@@ -24,7 +24,7 @@ defmodule Blog.Posts do
   def list_posts(search_term) do
     query = "%#{search_term}%"
 
-    Repo.all(from p in Post, where: like(p.content, ^query))
+    Repo.all(from p in Post, where: (like(p.title, ^query)) or (like(p.content, ^query)))
     |> Repo.preload(:user)
   end
 

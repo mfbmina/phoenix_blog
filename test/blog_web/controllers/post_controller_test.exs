@@ -69,8 +69,25 @@ defmodule BlogWeb.PostControllerTest do
   describe "search" do
     setup [:valid_token, :create_post]
 
-    test "lists all posts when findind resources", %{conn: conn, post: post, user: user} do
-      conn = get(conn, Routes.post_path(conn, :search), q: "some")
+    test "lists all posts when finding by title ", %{conn: conn, post: post, user: user} do
+      conn = get(conn, Routes.post_path(conn, :search), q: "title")
+      assert json_response(conn, 200) == [%{
+        "id" => post.id,
+        "title" => post.title,
+        "content" => post.content,
+        "published" => NaiveDateTime.to_iso8601(post.inserted_at),
+        "updated" => NaiveDateTime.to_iso8601(post.updated_at),
+        "user" => %{
+          "displayName" => user.display_name,
+          "email" => user.email,
+          "id" => user.id,
+          "image" => user.image }
+        }
+      ]
+    end
+
+    test "lists all posts when finding by content ", %{conn: conn, post: post, user: user} do
+      conn = get(conn, Routes.post_path(conn, :search), q: "content")
       assert json_response(conn, 200) == [%{
         "id" => post.id,
         "title" => post.title,
