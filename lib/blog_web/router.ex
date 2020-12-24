@@ -44,7 +44,7 @@ defmodule BlogWeb.Router do
     end
   end
 
-  def handle_errors(conn, %{kind: kind, reason: reason, stack: _stack}) do
+  def handle_errors(conn, %{kind: _kind, reason: reason, stack: _stack}) do
     body = Jason.encode!(%{message: "Something went wrong", details: reason.message})
 
     conn

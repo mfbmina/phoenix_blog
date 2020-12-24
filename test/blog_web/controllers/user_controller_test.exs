@@ -88,18 +88,18 @@ defmodule BlogWeb.UserControllerTest do
 
   describe "create user" do
     test "renders user when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
-      assert %{"jwt" => _jwt} = json_response(conn, 201)
+      conn = post(conn, Routes.user_path(conn, :create), @create_attrs)
+      assert %{"token" => _jwt} = json_response(conn, 201)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.user_path(conn, :create), user: @invalid_attrs)
+      conn = post(conn, Routes.user_path(conn, :create), @invalid_attrs)
       assert json_response(conn, 400)["errors"] != %{}
     end
 
     test "renders errors when email is duplicated", %{conn: conn} do
       create_user(nil)
-      conn = post(conn, Routes.user_path(conn, :create), user: @create_attrs)
+      conn = post(conn, Routes.user_path(conn, :create), @create_attrs)
       assert json_response(conn, 409)["errors"] != %{}
     end
   end
@@ -109,7 +109,7 @@ defmodule BlogWeb.UserControllerTest do
 
     test "renders jwt when data is valid", %{conn: conn} do
       conn = post(conn, Routes.user_path(conn, :login), email: "some@email.com", password: "some password_hash")
-      assert %{"jwt" => _jwt} = json_response(conn, 200)
+      assert %{"token" => _jwt} = json_response(conn, 200)
     end
 
     test "renders errors when password is incorrect", %{conn: conn} do

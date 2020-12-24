@@ -18,6 +18,6 @@ defmodule BlogWeb.UserView do
   end
 
   def render("jwt.json", %{jwt: jwt}) do
-    %{jwt: jwt}
+    %{token: jwt}
   end
 end
